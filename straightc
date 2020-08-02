@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+
+namespace ConsoleApp3
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            var map = new int[5, 5] 
+            {
+                {  0,  6, -1,  1, -1 },
+                {  6,  0,  5,  2,  2 },
+                { -1,  5,  0, -1,  5 },
+                {  1,  2, -1,  0,  1 },
+                { -1,  2,  5,  1,  0 },
+            };
+
+            var shortestDistances = new int[5] { int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
+            var shortest = new int[5] { int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
+            var previousVertex = new int[5];
+            var visited = new List<int>();
+            var unvisited = new List<int>() { 0, 1, 2, 3, 4 };
+
+            int startNode = 0;
+
+            int currentNode = 0;
+            int shortestNode = startNode;
+
+            while (unvisited.Count > 0)
+            {                
+                currentNode = shortestNode;
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (map[currentNode, i] != -1)
+                    {
+                        int totalDistance = 0;
+
+                        if (shortest[currentNode] < int.MaxValue)
+                            totalDistance = map[currentNode, i] + shortest[currentNode];
+                        else
+                            totalDistance = map[currentNode, i];
+
+                        if (totalDistance < shortestDistances[i])
+                        {
+                            shortestDistances[i] = totalDistance;
+                            previousVertex[i] = currentNode;
+                        }
+
+                        if (totalDistance > 0 && totalDistance <= shortest[i])
+                        {
+                            shortest[i] = totalDistance;
+                            shortestNode = i;
+                        }
+                    }
+                }
+
+                if (currentNode != shortestNode)
+                {
+                    visited.Add(currentNode);
+                    unvisited.Remove(currentNode);
+                } else
+                {
+                    foreach(int node in unvisited)
+                    {
+                        visited.Add(node);
+                    }
+                    unvisited.Clear();
+                }
+            }
+
+            Console.WriteLine("[A, B, C, D, E]");
+            Console.WriteLine("[{0}]", string.Join(", ", shortestDistances));
+            Console.WriteLine("[{0}]", string.Join(", ", previousVertex));
+
+            Console.Read();
+        }
+    }
+}
